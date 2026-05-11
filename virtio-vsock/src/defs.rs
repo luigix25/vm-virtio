@@ -15,6 +15,8 @@ use vm_memory::{ByteValued, GuestMemoryError, Le16, Le32, Le64, VolatileMemoryEr
 /// Vsock packet parsing errors.
 #[derive(Debug)]
 pub enum Error {
+    /// The descriptor chain could not be processed.
+    InvalidChain,
     /// Too few descriptors in a descriptor chain.
     DescriptorChainTooShort,
     /// Descriptor that was too short to use.
@@ -42,6 +44,9 @@ impl std::error::Error for Error {}
 impl Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            Error::InvalidChain => {
+                write!(f, "The descriptor chain could not be processed.")
+            }
             Error::DescriptorChainTooShort => {
                 write!(f, "There are not enough descriptors in the chain.")
             }
@@ -238,6 +243,7 @@ mod tests {
                 (DescriptorLengthTooSmall, DescriptorLengthTooSmall) => true,
                 (DescriptorLengthTooLong, DescriptorLengthTooLong) => true,
                 (FragmentedMemory, FragmentedMemory) => true,
+                (InvalidChain, InvalidChain) => true,
                 (InvalidHeaderInputSize(size), InvalidHeaderInputSize(other_size)) => {
                     size == other_size
                 }
