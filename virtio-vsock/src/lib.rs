@@ -7,5 +7,7 @@
 
 #![deny(missing_docs)]
 
+/// Contains the vsock shared definitions.
+pub mod defs;
 /// Contains a vsock packet abstraction.
 pub mod packet;
